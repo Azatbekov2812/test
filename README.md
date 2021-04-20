@@ -27,4 +27,7 @@ API для системы опросов пользователей
 
 ## Документация api
 Авторизация:
-  ```python api/jwt/token ```
+  url ```api/jwt/token  ```
+  method: ```post```
+  parametrs: ```username, password```
+  Получаем токен, передавайте токен в заголовке Authorization: JWT <toke>
