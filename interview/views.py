@@ -1,5 +1,5 @@
 from django.db.models import Q
-from rest_framework import status
+from rest_framework import status, permissions
 from rest_framework import viewsets
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
@@ -13,10 +13,12 @@ from .serializers import QuestionsSerializer, QuizSerializer, ActiveQuizSerializ
 class QuizViewSet(viewsets.ModelViewSet):
     queryset = Quiz.objects.all()
     serializer_class = QuizSerializer
+    permission_classes = [permissions.IsAdminUser]
 
 
 class QuestionViewSet(viewsets.ModelViewSet):
     serializer_class = QuestionsSerializer
+    permission_classes = [permissions.IsAdminUser]
 
     def get_queryset(self):
         quiz = get_object_or_404(Quiz, id=self.kwargs['quiz_id'])
@@ -36,12 +38,11 @@ class QuestionViewSet(viewsets.ModelViewSet):
 class ChoiceViewSet(viewsets.ModelViewSet):
     queryset = Choice.objects.all()
     serializer_class = ChoiceSerializer
+    permission_classes = [permissions.IsAdminUser]
 
 
 class AnswerCreateViewSet(viewsets.ModelViewSet):
     queryset = Answer.objects.all()
-
-    # serializer_class = AnswerSerializer
 
     def get_serializer_class(self):
         if self.action == 'create':
