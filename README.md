@@ -16,7 +16,15 @@ API для системы опросов пользователей
 ## Установка 
   1. Cклонируйте репозитори
   2. Создайте вертуальное окружение
-  3. ```bash
-    pip install -r requirements.txt
-```
-  4. 
+  3. Скачать зависимости ```pip install -r requirements.txt```
+  4. Сделать миграцию
+    4.1 ```python manage.py makemigrations```
+    4.2 ```python manage.py migrate```
+  5. Cоздать суперпользователя
+    - ```python manage.py createsuperuser
+  6. Запустить сервер локально
+    - ```python manage.py runserver```
+
+## Документация api
+Авторизация:
+  ```python api/jwt/token ```
