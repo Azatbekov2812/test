@@ -1,20 +1,26 @@
 from django.contrib import admin
 from rest_framework.routers import DefaultRouter
 from django.urls import path, include
+from rest_framework_jwt.views import ObtainJSONWebToken, RefreshJSONWebToken
 
 from . import views
-from .views import QuestionList, QuizList, QuizDetail, QuestionDetail
 
 router = DefaultRouter()
 
 router.register('quiz', views.QuizViewSet, basename='quiz')
 router.register(r'quiz/(?P<quiz_id>\d+)/questions', views.QuestionViewSet, basename='questions')
-#router.register('quiz/<int:pk>/questions', views.QuestionViewSet)
+router.register(r'quiz/(?P<quiz_id>\d+)/questions/(?P<question_id>\d+)/choices', views.ChoiceViewSet,
+                basename='choices')
+router.register(r'quiz/(?P<quiz_id>\d+)/questions/(?P<question_id>\d+)/answers', views.AnswerCreateViewSet,
+                basename='answers')
+
+router.register(r'user_quiz/(?P<user_id>\d+)', views.UserQuizViewSet, basename='user_quiz')
+
+router.register('activate', views.ActivateQuiz, basename='activate')
+router.register('active_quiz', views.ActiveQuizViewSet, basename='active_quiz')
 
 urlpatterns = [
     path('', include(router.urls)),
-    # path('quiz/', QuizList.as_view()),
-    # path('quiz/<int:pk>/', QuizDetail.as_view()),
-    # path('quiz/<int:pk>/questions/', QuestionList.as_view()),
-    # path('quiz/<int:quiz_id>/questions/<int:pk>/', QuestionDetail.as_view()),
+    path('jwt_token/', ObtainJSONWebToken.as_view()),
+    path('refresh_token/', RefreshJSONWebToken.as_view()),
 ]

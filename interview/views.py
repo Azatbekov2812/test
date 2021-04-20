@@ -1,11 +1,12 @@
-from django.shortcuts import render
-from rest_framework import generics, status
+from django.db.models import Q
+from rest_framework import status
+from rest_framework import viewsets
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
-from .models import Question, Quiz
-from .serializers import QuestionsSerializer, CreateQuestionsSerializer, QuizSerializer, CreateQuizSerializer
-from rest_framework import viewsets, mixins, permissions
+from .models import Question, Quiz, Choice, Answer
+from .serializers import QuestionsSerializer, QuizSerializer, ActiveQuizSerializer, ChoiceSerializer, AnswerSerializer, \
+    AnswerOneTextSerializer, AnswerOneChoiceSerializer, AnswerMultipleChoiceSerializer, UserQuizSerializer
 
 
 # Create your views here.
@@ -32,20 +33,53 @@ class QuestionViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
-class QuizList(generics.ListCreateAPIView):
-    serializer_class = CreateQuizSerializer
+class ChoiceViewSet(viewsets.ModelViewSet):
+    queryset = Choice.objects.all()
+    serializer_class = ChoiceSerializer
 
 
-class QuizDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Quiz.objects.all()
+class AnswerCreateViewSet(viewsets.ModelViewSet):
+    queryset = Answer.objects.all()
+
+    # serializer_class = AnswerSerializer
+
+    def get_serializer_class(self):
+        if self.action == 'create':
+            questions = get_object_or_404(Question, pk=self.kwargs['question_id'], quiz__id=self.kwargs['quiz_id'])
+            if questions.type == Question.TYPE_TEXT:
+                return AnswerOneTextSerializer
+            elif questions.type == Question.TYPE_ONE:
+                return AnswerOneChoiceSerializer
+            else:
+                return AnswerMultipleChoiceSerializer
+
+        else:
+            return AnswerSerializer
+
+    def perform_create(self, serializer):
+        question = get_object_or_404(
+            Question,
+            id=self.kwargs['question_id'],
+            quiz__id=self.kwargs['quiz_id'],
+        )
+        serializer.save(user=self.request.user, question=question)
+
+
+class UserQuizViewSet(viewsets.ModelViewSet):
+    serializer_class = UserQuizSerializer
+
+    def get_queryset(self):
+        id_answer_user = self.kwargs['user_id']
+        #return Question.objects.filter(answers__id_answer_user=id_answer_user)
+        return Quiz.objects.filter(questions__answers__user_id=id_answer_user)
+
+
+class ActiveQuizViewSet(viewsets.ModelViewSet):
     serializer_class = QuizSerializer
+    queryset = Quiz.customObject.active()
+    http_method_names = ['get']
 
 
-class QuestionList(generics.ListCreateAPIView):
-    queryset = Question.objects.all()
-    serializer_class = QuestionsSerializer
-
-
-class QuestionDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Question.objects.all()
-    serializer_class = QuestionsSerializer
+class ActivateQuiz(viewsets.ModelViewSet):
+    serializer_class = ActiveQuizSerializer
+    queryset = Quiz.customObject.yet_not_active()
