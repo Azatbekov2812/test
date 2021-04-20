@@ -30,4 +30,25 @@ API для системы опросов пользователей
   url ```api/jwt/token  ```
   method: ```post```
   parametrs: ```username, password```
-  Получаем токен, передавайте токен в заголовке Authorization: JWT <toke>
+  Получаем токен, передавайте токен в заголовке Authorization: JWT <token>
+  
+## Добавление опросов
+  metohd: POST
+  url: ```api/quiz/```
+  parametrs: ```name end_date description```
+  permission: ADMIN
+
+### изменение/удаление опросов
+  metohd: PUT, DELETE
+  url: ```api/quiz/<quiz_id>/```
+  permission: ADMIN
+ 
+ ## Добавление вопросов
+  metohd: POST
+  url: ```api/quiz/<quiz_id>/questions```
+  parametrs: ```question_text type quiz```
+  permission: ADMIN
+### изменение/удаление опросов
+  metohd: PUT, DELETE
+  url: ```api/quiz/<quiz_id>/questions/<question_id>/```
+  permission: ADMIN
