@@ -52,3 +52,22 @@ API для системы опросов пользователей
   metohd: PUT, DELETE
   url: ```api/quiz/<quiz_id>/questions/<question_id>/```
   permission: ADMIN
+  
+## Добавление вариантов ответа к вопросу
+  metohd: POST
+  url: ```api/quiz/<quiz_id>/questions/<question_id>/choices```
+  parametrs: ```options```
+  permission: ADMIN
+  
+## Получение списка активных опросов 
+  metohd: GET
+  url: ```api/active_quiz```
+  
+## Прохождение опроса
+  metohd: POST
+  url: ```api/quiz/<quiz_id>/questions/<question_id>/answers```
+  parametrs: ```user_id```
+
+## Список пройденных опросов пользователя
+  metohd: GET
+  url: ```api/user_quiz/<user_id>/```
