@@ -16,7 +16,7 @@ router.register(r'quiz/(?P<quiz_id>\d+)/questions/(?P<question_id>\d+)/answers',
 
 router.register(r'user_quiz/(?P<user_id>\d+)', views.UserQuizViewSet, basename='user_quiz')  # list quizdetail
 
-router.register('activate', views.ActivateQuiz, basename='activate')  # start quiz date
+#router.register('activate', views.ActivateQuiz, basename='activate')  # start quiz date
 router.register('active_quiz', views.ActiveQuizViewSet, basename='active_quiz')
 
 urlpatterns = [

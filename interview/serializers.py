@@ -10,7 +10,13 @@ User = get_user_model()
 class ActiveQuizSerializer(serializers.ModelSerializer):
     class Meta:
         model = Quiz
-        fields = ('start_date', 'end_date')
+        fields = ('start_date',)
+
+
+class CreateQuizSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Quiz
+        fields = ('id', 'name', 'end_date', 'description')
 
 
 class QuizSerializer(serializers.ModelSerializer):
@@ -28,7 +34,7 @@ class QuestionsSerializer(serializers.ModelSerializer):
 class ChoiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Choice
-        fields = '__all__'
+        fields = ('options',)
 
 
 class ChoicePrimaryKeyRelated(serializers.PrimaryKeyRelatedField):

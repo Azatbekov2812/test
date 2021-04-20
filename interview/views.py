@@ -6,14 +6,23 @@ from rest_framework.response import Response
 
 from .models import Question, Quiz, Choice, Answer
 from .serializers import QuestionsSerializer, QuizSerializer, ActiveQuizSerializer, ChoiceSerializer, AnswerSerializer, \
-    AnswerOneTextSerializer, AnswerOneChoiceSerializer, AnswerMultipleChoiceSerializer, UserQuizSerializer
+    AnswerOneTextSerializer, AnswerOneChoiceSerializer, AnswerMultipleChoiceSerializer, UserQuizSerializer, \
+    CreateQuizSerializer
 
 
 # Create your views here.
 class QuizViewSet(viewsets.ModelViewSet):
     queryset = Quiz.objects.all()
-    serializer_class = QuizSerializer
+    serializer_class = CreateQuizSerializer
     permission_classes = [permissions.IsAdminUser]
+
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return CreateQuizSerializer
+        else:
+            return QuizSerializer
+
+
 
 
 class QuestionViewSet(viewsets.ModelViewSet):
@@ -71,7 +80,7 @@ class UserQuizViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         id_answer_user = self.kwargs['user_id']
-        #return Question.objects.filter(answers__id_answer_user=id_answer_user)
+        # return Question.objects.filter(answers__id_answer_user=id_answer_user)
         return Quiz.objects.filter(questions__answers__user_id=id_answer_user)
 
 
